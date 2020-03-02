@@ -15,8 +15,7 @@ a feature to "touch" a file upon successful execution of the maven goal(s).
 
 To use type that command:
 ```$bash
-mvn -Dwatches=./first-project/src/main,./second-project/src/main -Dprojects=first-project,second-project -Dgoals=install -Dprofiles=optional
--profile io.github.vzhn:watcher-maven-plugin:1.0.7-SNAPSHOT:run
+mvn -Dwatches=./first-project/src/main,./second-project/src/main -Dprojects=first-project,second-project -Dgoals=install -Dprofiles=optional-profile io.github.vzhn:watcher-maven-plugin:1.0.7-SNAPSHOT:run
 ```
 
 Or add the following to your POM:
