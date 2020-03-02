@@ -1,14 +1,3 @@
-Maven Plugins by Fizzed [![Build Status](https://travis-ci.org/fizzed/maven-plugins.svg)](https://travis-ci.org/fizzed/java-maven-plugins)
-=======================================
-
- - [Fizzed, Inc.](http://fizzed.com)
- - Joe Lauer (Twitter: [@jjlauer](http://twitter.com/jjlauer))
-
-## Overview
-
-Collection of Maven plugins useful for gettin 'er done.
-
-
 ## Watcher (fizzed-watcher-maven-plugin)
 
 Ever wish Maven could run a specific command if any files in your project change? Some IDEs
@@ -24,16 +13,22 @@ of your sub modules too.
 To assist in using this plugin to trigger other workflow/plugins, v1.0.6 added
 a feature to "touch" a file upon successful execution of the maven goal(s).
 
-To use add the following to your POM:
+To use type that command:
+```$bash
+mvn -Dwatches=./first-project/src/main,./second-project/src/main -Dprojects=first-project,second-project -Dgoals=install -Dprofiles=optional
+-profile io.github.vzhn:watcher-maven-plugin:1.0.7-SNAPSHOT:run
+```
+
+Or add the following to your POM:
 
 ```xml
 <build>
     <plugins>
         ...
         <plugin>
-            <groupId>com.fizzed</groupId>
-            <artifactId>fizzed-watcher-maven-plugin</artifactId>
-            <version>1.0.6</version>
+            <groupId>io.vzhn</groupId>
+            <artifactId>watcher-maven-plugin</artifactId>
+            <version>1.0.7-SNAPSHOT</version>
             <configuration>
                 <touchFile>target/classes/watcher.txt</touchFile>
                 <watches>
@@ -78,81 +73,6 @@ shell and run via:
 
 ```bash
 mvn fizzed-watcher:run
-```
-
-## Versionizer (fizzed-versionizer-maven-plugin)
-
-Maven plugin that generates a Java source file containing artifact
-version info. This is compiled and included with the final artifact.
-An alternative to using Jar manifest files for extracting version info
-from a library. The directory the file is output to is also added to your
-project as a directory containing Java sources (and will be automatically
-picked up during the compile phase).
-
-To use add the following to your POM:
-
-```xml
-<build>
-    <plugins>
-        ...
-        <plugin>
-            <groupId>com.fizzed</groupId>
-            <artifactId>fizzed-versionizer-maven-plugin</artifactId>
-            <version>1.0.6</version>
-            <executions>
-                <execution>
-                    <id>generate-version-class</id>
-                    <goals>
-                        <goal>generate</goal>
-                    </goals>
-                    <configuration>
-                        <javaPackage>com.fizzed.examples.helloworld</javaPackage>
-                    </configuration>
-                </execution>
-            </executions> 
-        </plugin>
-        ...
-    </plugins>
-</build>
-```
-
-By default this will generate a Version.java source file in:
-
-    ${project.build.directory}/generated-sources/versionizer
-
-
-## Play (fizzed-play-maven-plugin)
-
-Maven plugin that does a best-effort compile of PlayFramework 2.x templates
-(file.scala.html) into a Java source file.  This plugin is primarily a hack
-to make Netbeans function to code complete PlayFramework projects using a pom.xml
-file.
-
-Templates are generated to ${project.build.directory}/generated-sources/play-templates
-
-To use add the following to your POM:
-
-```xml
-<build>
-    <plugins>
-        ...
-        <plugin>
-            <groupId>com.fizzed</groupId>
-            <artifactId>fizzed-play-maven-plugin</artifactId>
-            <version>1.0.6</version>
-            <executions>
-                <execution>
-                    <id>best-effort-play-template-compiler</id>
-                    <phase>generate-sources</phase>
-                    <goals>
-                        <goal>template-compile</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        ...
-    </plugins>
-</build>
 ```
 
 ## License

@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.fizzed</groupId>
-    <artifactId>fizzed-maven-plugins</artifactId>
+    <groupId>io.github.vzhn</groupId>
+    <artifactId>watcher-parent</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <version>1.0.7-SNAPSHOT</version>
-    <description>Parent pom for all Fizzed Maven plugin projects</description>
-    <url>https://github.com/fizzed/java-maven-plugins</url>
+    <description>Parent pom for Watcher Maven plugin project</description>
+    <url>https://github.com/vzhn/watcher</url>
     
     <licenses>
         <license>
@@ -15,21 +15,24 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <organization>
         <name>Fizzed Inc</name>
         <url>http://fizzed.com</url>
     </organization>
-    
+
     <scm>
-        <url>https://github.com/fizzed/java-maven-plugins</url>
-        <connection>scm:git:git@github.com:fizzed/java-maven-plugins.git</connection>
+        <url>https://github.com/vzhn/watcher</url>
+        <connection>scm:git:git@github.com:vzhn/watcher.git</connection>
         <tag>version-1.0.2</tag>
     </scm>
     
     <developers>
         <developer>
             <email>oss@fizzed.com</email>
+        </developer>
+        <developer>
+            <email>zhilin.vladimir.nic@gmail.com</email>
         </developer>
     </developers>
 
@@ -47,8 +50,6 @@
     </distributionManagement>
 
     <modules>
-        <module>versionizer</module>
-	<module>play</module>
         <module>watcher</module>
     </modules>
 

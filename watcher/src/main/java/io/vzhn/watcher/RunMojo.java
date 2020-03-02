@@ -1,60 +1,39 @@
-package com.fizzed.maven.watcher;
+package io.vzhn.watcher;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.ClosedWatchServiceException;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
-import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.apache.maven.Maven;
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionResult;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.execution.*;
+import org.apache.maven.plugin.*;
 import org.apache.maven.plugin.prefix.PluginPrefixResolver;
 import org.apache.maven.plugin.version.PluginVersionResolver;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.*;
 import org.codehaus.plexus.util.DirectoryScanner;
+
+import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * Utility for watching directories/files and triggering a maven goal.
  *
- * @author joelauer
+ * @author joelauer, Fizzed, Inc
  */
 @Mojo(name = "run", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, threadSafe = true)
 public class RunMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     protected MavenSession session;
+
+    @Parameter(property = "projects", alias = "watcher.projects", required = false)
+    protected List<String> projects;
     
     @Parameter(property = "watches", alias = "watcher.watches", required = true)
-    protected List<WatchFileSet> watches;
+    protected List<String> watches;
 
     @Parameter(property = "goals", alias = "watcher.goals", required = true)
     protected List<String> goals;
@@ -62,7 +41,7 @@ public class RunMojo extends AbstractMojo {
     @Parameter(property = "profiles", alias = "watcher.profiles", required = false)
     protected List<String> profiles;
     
-    @Parameter(property = "watcher.skipTouch", defaultValue = "false")
+    @Parameter(property = "watcher.skipTouch", defaultValue = "true")
     protected boolean skipTouch;
     
     @Parameter(property = "watcher.touchFile", defaultValue = "${project.build.directory}/watcher.txt")
@@ -95,8 +74,8 @@ public class RunMojo extends AbstractMojo {
         }
 
         getLog().info("Registering " + watches.size() + " watch sets...");
-        
-        for (WatchFileSet wfs : watches) {
+        List<WatchFileSet> ws = watches.stream().map(WatchFileSet::new).collect(Collectors.toList());
+        for (WatchFileSet wfs : ws) {
             getLog().info("Registering watch set: " + wfs);
             
             File dir = new File(wfs.getDirectory());
@@ -141,7 +120,9 @@ public class RunMojo extends AbstractMojo {
                             request.setActiveProfiles(profiles);
                         }
                         request.setGoals(goals);
-                        
+                        if (projects != null && projects.size() > 0) {
+                            request.setSelectedProjects(projects);
+                        }
                         getLog().info("Changed detected. Running command-line equivalent of:");
                         getLog().info(" " + this.buildMavenCommandLineEquivalent());
                         MavenExecutionResult executionResult = maven.execute(request);
@@ -271,7 +252,7 @@ public class RunMojo extends AbstractMojo {
         return sb.toString();
     }
     
-    public void addWatch(WatchFileSet wfs) {
+    public void addWatch(String wfs) {
         if (this.watches == null) {
             this.watches = new ArrayList<>();
         }

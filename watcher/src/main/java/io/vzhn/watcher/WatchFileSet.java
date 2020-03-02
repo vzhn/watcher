@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fizzed.maven.watcher;
+package io.vzhn.watcher;
 
 import org.apache.maven.model.FileSet;
 
 /**
  *
- * @author joelauer
+ * @author joelauer, Fizzed, Inc
  */
 public class WatchFileSet extends FileSet {
     
     //private String directory;
-    private boolean recursive;
+    private boolean recursive = true;
     //private List<String> includes;
-    
-    public WatchFileSet() {
-        this.recursive = true;
-        //this.includes = new ArrayList<>();
+
+    public WatchFileSet(String directory) {
+        setDirectory(directory);
     }
+
+    public WatchFileSet() { }
 
     public boolean isRecursive() {
         return recursive;
@@ -39,5 +40,4 @@ public class WatchFileSet extends FileSet {
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
     }
-    
 }
